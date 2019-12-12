@@ -1,0 +1,17 @@
+Demo code for our ICCV 2015 paper
+"On Linear Structure-from-Motion for Light Field Cameras"
+Ole Johannsen, Antonin Sulc, Bastian Goldluecke
+
+Open and run "example.m" in Matlab to get started.
+
+Main entry function to compute the relative light field camera pose
+is in "lf_sfm.m".
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% (c) Bastian Goldluecke 11/2014, University of Konstanz
+% License: Creative Commons BY-SA 4.0
+%          Please cite our paper if you use our code in your work.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

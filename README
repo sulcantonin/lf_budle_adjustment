@@ -1,0 +1,119 @@
+############################################################################
+#  This file is part of the Light Field Structure from Motion package.     #
+#                                                                          #
+#  This work is licensed under the Creative Commons                        #
+#  Attribution-NonCommercial-ShareAlike 4.0 International License.         #
+#  To view a copy of this license,                                         #
+#  visit http://creativecommons.org/licenses/by-nc-sa/4.0/.                #
+#                                                                          #
+#  Authors: Ole Johannsen, Antonin Sulc                                    #
+#  Contact: first.last@uni-konstanz.de                                     #
+#  Website: www.cvia.uni-konstanz.de                                       #
+#                                                                          #
+#  The package provides code for our ICCV'15 (Structure from Motion) and   #
+#  and ACCV'16 paper (adding a bundle adjustment). If you use our work     #
+#  we would kindly ask you to cite our below-mentioned papers. Thanks!     #
+#                                                                          #
+# @string{iccv="IEEE International Conference on Computer Vision (ICCV)"}  #
+# @InProceedings{JSG15:iccv,                                               #
+#   author = {O. Johannsen and A. Sulc and B. Goldluecke},                 #
+#   title = {On Linear Structure from Motion for Light Field Cameras},     #
+#   booktitle = iccv, year = {2015}, }                                     #
+#                                                                          #
+# @string{accv="Asian Conference on Computer Vision (ACCV)"}               #
+# @InProceedings{JSMG16:accv,                                              #
+#   author = {O. Johannsen and A. Sulc and N. Marniok and B. Goldluecke},  #
+#   title = {Layered scene reconstruction from multiple light              #
+#       field camera views}, booktitle = accv, year = {2016}, }            #
+#                                                                          #
+############################################################################
+
+
+I. Introduction 
+
+This package contains a matlab implementation of our ICCV'15 paper on 
+structure from motion for light fields and, in addition, the bundle adjustment
+implementation of the ACCV'16 paper on layered scene reconstruction.
+
+In case you use our code please cite our papers mentioned in the header.
+
+
+
+II. Running examples on our data
+
+We prepared two examples, 
+- a synthetic dataset 
+    http://lightfield-analysis.net/accv2016_ba_data_synthetic.zip
+- a Lytro Illum example 
+    http://lightfield-analysis.net/accv2016_ba_data_lytro.zip
+
+Extract both into the "data" folder.
+
+For the synthetic example please run the example.m file, for the Lytro Illum 
+example the example_lytro.m file.
+
+
+
+III. Running examples on other Lytro Illum datasets
+
+We received many questions about how to run our code on other light fields 
+from Lytro Illum. The entry requirement is to have an intrinsic calibration done, 
+namely the H matrix (\cite{Dansereau_2013_CVPR}) needs to be computed. 
+The calibration can be performed with the Light Field Toolbox 4.0 
+(available online at http://dgd.vision/Tools/). 
+You will need to take the following steps.
+
+III.a. Download and install Light Field Toolbox 4.0 or newer
+Available online http://dgd.vision/Tools/
+
+III.b. Calibration
+- Print a checkerboard calibration pattern with known parameters (or measure them)
+- The checkerboard must have an unequal number of corners
+- Take a few (~15) pictures of the checkerboard from slightly different angles
+  without changing any parameters (focus, zoom). The wider side of checkerboard 
+  must be horizontally aligned with the camera.
+
+III.c. Copy decoding information from your Lytro and Decode the calibration images
+- Add the Light Field Toolbox to your MATLAB path
+- There should be a folder on your Lytro called IllumCaldata, copy it somewhere. 
+- Copy the pictures of the calibration checkerboard somewhere and change your 
+  MATLAB directory to the directory $PATH/IllumCaldata. 
+- Run command 
+    "LFUtilDecodeLytroFolder($DECODE_FOLDER);"
+  where DECODE_FOLDER is a folder with your newly captured checkerboard
+
+III.d. Calibrate 
+- Set up calibration settings, checkerboard size, and spacing between boxes (in mm):
+    CalOptions.ExpectedCheckerSize = [$NUM_HORIZONTAL,$NUM_VERTICAL];
+    CalOptions.ExpectedCheckerSpacing_m = [$WIDTH, HEIGHT];
+    CalOptions.LensletBorderSize = 2;
+  The last line usually gives better results.
+- Run calibration
+    LFUtilCalLensletCam($DECODE_FOLDER, CalOptions);
+- After this add the calibration into your database by running command
+    LFUtilProcessCalibrations
+
+III.e. Rectify your calibrated light fields
+- Now you can take new images with the same settings (even a small change can have a 
+  significant influence on quality) Please note, that there is an option to lock
+  focus and focallength for the Lytro Illum.
+- Run 
+    DecodeOptions.OptionalTasks = 'Rectify';
+    LFUtilDecodeLytroFolder($NEW_LYTRO_LIGHTFIELDS, [], DecodeOptions);
+  where NEW_LYTRO_LIGHTFIELDS is a folder with newly captured light fields. Light field toolbox automatically adds the calibration matrix to the structures
+
+
+
+
+
+
+--- REFERENCES ---
+
+
+ @InProceedings{Dansereau_2013_CVPR,
+author = {Dansereau, Donald G. and Pizarro, Oscar and Williams, Stefan B.},
+title = {Decoding, Calibration and Rectification for Lenselet-Based Plenoptic Cameras},
+booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+month = {June},
+year = {2013}
+}
